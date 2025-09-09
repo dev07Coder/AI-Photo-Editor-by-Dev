@@ -8,9 +8,16 @@ import { UploadIcon, MagicWandIcon, PaletteIcon, SunIcon } from './icons';
 
 interface StartScreenProps {
   onFileSelect: (files: FileList | null) => void;
+  onDemoImageSelect: (url: string) => void;
 }
 
-const StartScreen: React.FC<StartScreenProps> = ({ onFileSelect }) => {
+const demoImages = [
+    { name: 'Portrait', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1024&auto=format&fit=crop' },
+    { name: 'Landscape', url: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1024&auto=format&fit=crop' },
+    { name: 'Architecture', url: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?q=80&w=1024&auto=format&fit=crop' },
+];
+
+const StartScreen: React.FC<StartScreenProps> = ({ onFileSelect, onDemoImageSelect }) => {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,6 +50,35 @@ const StartScreen: React.FC<StartScreenProps> = ({ onFileSelect }) => {
             </label>
             <input id="image-upload-start" type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
             <p className="text-sm text-gray-500">or drag and drop a file</p>
+        </div>
+
+        <div className="mt-12 w-full max-w-3xl">
+            <div className="relative flex py-2 items-center">
+                <div className="flex-grow border-t border-gray-700"></div>
+                <span className="flex-shrink mx-4 text-gray-400 text-sm font-medium">OR TRY A DEMO</span>
+                <div className="flex-grow border-t border-gray-700"></div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                {demoImages.map((image) => (
+                    <button
+                        key={image.name}
+                        onClick={() => onDemoImageSelect(image.url)}
+                        className="relative block w-full aspect-square rounded-lg overflow-hidden group focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-blue-500"
+                        aria-label={`Load demo image: ${image.name}`}
+                    >
+                        <img 
+                            src={image.url} 
+                            alt={`Demo image: ${image.name}`} 
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+                            crossOrigin="anonymous" 
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
+                            <span className="text-white font-bold text-lg tracking-wide text-center">Try {image.name}</span>
+                        </div>
+                    </button>
+                ))}
+            </div>
         </div>
 
         <div className="mt-16 w-full">
